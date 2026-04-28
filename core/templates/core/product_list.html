@@ -5,6 +5,48 @@
 {% block h1 %}Каталог товаров{% endblock %}
 
 {% block content %}
+    {% if user.role.name == "admin" or  user.role.name == "manager" %}
+<div>
+    <form method="get" style="display: flex;">
+        <div>
+            <label>Поиск:</label><br>
+            <input type="text" name="search" value="{{ current_search }}" placeholder="Найти..."
+                oninput="clearTimeout(this.delay); this.delay = setTimeout(() => this.form.submit(), 500);">
+        </div>
+
+        <div>
+            <label>Поставщик:</label><br>
+            <select name="supplier" onchange="this.form.submit()">
+                <option value="all">Все поставщики</option>
+                {% for s in suppliers %}
+                    <option value="{{ s.id }}" {% if current_supplier == s.id|stringformat:"i" %}selected{% endif %}>{{ s.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label>Сортировка (кол-во):</label><br>
+            <select name="sort" onchange="this.form.submit()">
+                <option value="">Без сортировки</option>
+                <option value="asc" {% if current_sort == "asc" %}selected{% endif %}>По возрастанию</option>
+                <option value="desc" {% if current_sort == "desc" %}selected{% endif %}>По убыванию</option>
+            </select>
+        </div>
+
+        {% if user.role.name == 'Администратор' or user.role.name == 'Менеджер' %}
+        <div style="margin-left: 10px;">
+            <a href="{% url 'order_list' %}" class="btn" style="background-color: #5bc0de;">Заказы</a>
+        </div>
+        {% endif %}
+
+        {% if user.role.name == 'Администратор' %}
+        <div style="margin-left: auto;">
+            <a href="{% url 'product_create' %}" class="btn">Добавить товар</a>
+        </div>
+        {% endif %}
+    </form>
+</div>
+{% endif %}
 <div>
     {% for product in products %}
     <div class="product-card 
