@@ -16,11 +16,21 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from core.views import UserLoginView
+from core.views import ProductListView, UserLoginView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", UserLoginView.as_view(), name="login"),
+    path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
+    path("products/", ProductListView.as_view(), name="product_list"),
 ]
+
+
+brackets = {
+    "(": ")",
+    "{": "}",
+    "[": "]",
+}
