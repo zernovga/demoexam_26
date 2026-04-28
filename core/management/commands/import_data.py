@@ -28,6 +28,10 @@ class Command(BaseCommand):
 
                 sup_obj, _ = Supplier.objects.get_or_create(name=row["supplier"])
                 row["supplier"] = sup_obj
+                
+                if row.get("photo") and not row["photo"].startswith("products/"):
+                    row["photo"] = f"products/{row['photo']}"
+                
                 Product.objects.update_or_create(article=row["article"], defaults=row)
 
         # users
