@@ -5,8 +5,6 @@ from .models import Product, Supplier
 
 class ProductForm(forms.ModelForm):
     # Текстовые поля для "умного" ввода
-    category_name = forms.CharField(label="Категория", required=True)
-    manufacturer_name = forms.CharField(label="Производитель", required=True)
     supplier_name = forms.CharField(label="Поставщик", required=True)
 
     class Meta:
@@ -23,6 +21,18 @@ class ProductForm(forms.ModelForm):
             "category",
             "manufacturer",
         ]
+        labels = {
+            "article": "Артикул",
+            "name": "Название",
+            "unit": "Единица измерения",
+            "price": "Цена",
+            "discount": "Скидка",
+            "quantity": "Количество",
+            "description": "Описание",
+            "photo": "Фото",
+            "category": "Категория",
+            "manufacturer": "Производитель",
+        }
         widgets = {
             "description": forms.Textarea(attrs={"rows": 3}),
         }
@@ -31,12 +41,6 @@ class ProductForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Предзаполняем поля при редактировании
         if self.instance.pk:
-            if self.instance.category:
-                self.fields["category_name"].initial = self.instance.category.name
-            if self.instance.manufacturer:
-                self.fields[
-                    "manufacturer_name"
-                ].initial = self.instance.manufacturer.name
             if self.instance.supplier:
                 self.fields["supplier_name"].initial = self.instance.supplier.name
 
