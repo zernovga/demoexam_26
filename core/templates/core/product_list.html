@@ -5,7 +5,7 @@
 {% block h1 %}Каталог товаров{% endblock %}
 
 {% block content %}
-    {% if user.role.name == "admin" or  user.role.name == "manager" %}
+{% if user.role.name == "admin" or user.role.name == "manager" %}
 <div>
     <form method="get" style="display: flex;">
         <div>
@@ -19,7 +19,8 @@
             <select name="supplier" onchange="this.form.submit()">
                 <option value="all">Все поставщики</option>
                 {% for s in suppliers %}
-                    <option value="{{ s.id }}" {% if current_supplier == s.id|stringformat:"i" %}selected{% endif %}>{{ s.name }}</option>
+                <option value="{{ s.id }}" {% if current_supplier == s.id|stringformat:"i" %}selected{% endif %}>{{ s.name
+                    }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -33,15 +34,15 @@
             </select>
         </div>
 
-        
+
         {% comment %}
-            {% if user.role.name == 'admin' or user.role.name == 'manager' %}
-            <div style="margin-left: 10px;">
-                <a href="{% url 'order_list' %}" class="btn" style="background-color: #5bc0de;">Заказы</a>
-            </div>
-            {% endif %}
+        {% if user.role.name == 'admin' or user.role.name == 'manager' %}
+        <div style="margin-left: 10px;">
+            <a href="{% url 'order_list' %}" class="btn" style="background-color: #5bc0de;">Заказы</a>
+        </div>
+        {% endif %}
         {% endcomment %}
-            
+
 
         {% if user.role.name == 'admin' %}
         <div style="margin-left: auto;">
@@ -49,7 +50,7 @@
         </div>
         {% endif %}
     </form>
-            
+
 </div>
 {% endif %}
 <div>
@@ -80,6 +81,9 @@
             Единица измерения: {{ product.unit }}
             <br />
             Количество на складе: {{ product.quantity }}
+            {% if user.role.name == "admin" %}
+            <br><a href="{% url 'product_edit' product.id %}">Редактировать товар</a>
+            {% endif %}
         </div>
         <div class="sale">{{ product.discount }}%</div>
     </div>
