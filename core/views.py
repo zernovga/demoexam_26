@@ -1,10 +1,14 @@
 from typing import Any
 
+from django.contrib import messages
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.db.models import Q
 from django.shortcuts import render  # noqa: F401
-from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView, UpdateView
 
+from .forms import ProductForm
 from .models import Product, Supplier
 
 
@@ -45,3 +49,46 @@ class ProductListView(ListView):
         context["current_sort"] = self.request.GET.get("sort", "")
 
         return context
+
+
+class AdminRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return (
+            self.request.user.is_authenticated
+            and self.request.user.role
+            and self.request.user.role.name == "admin"
+        )
+
+
+class ProductCreateUpdateMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["all_suppliers"] = Supplier.objects.all()
+        return context
+
+
+class ProductCreateView(AdminRequiredMixin, ProductCreateUpdateMixin, CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "core/product_form.html"
+    success_url = reverse_lazy("product_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Товар успешно добавлен")
+        return super().form_valid(form)
+
+
+class ProductUpdateView(AdminRequiredMixin, ProductCreateUpdateMixin, UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "core/product_form.html"
+    success_url = reverse_lazy("product_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_edit"] = True
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "Товар успешно обновлен")
+        return super().form_valid(form)

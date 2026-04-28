@@ -33,18 +33,23 @@
             </select>
         </div>
 
-        {% if user.role.name == 'Администратор' or user.role.name == 'Менеджер' %}
-        <div style="margin-left: 10px;">
-            <a href="{% url 'order_list' %}" class="btn" style="background-color: #5bc0de;">Заказы</a>
-        </div>
-        {% endif %}
+        
+        {% comment %}
+            {% if user.role.name == 'admin' or user.role.name == 'manager' %}
+            <div style="margin-left: 10px;">
+                <a href="{% url 'order_list' %}" class="btn" style="background-color: #5bc0de;">Заказы</a>
+            </div>
+            {% endif %}
+        {% endcomment %}
+            
 
-        {% if user.role.name == 'Администратор' %}
+        {% if user.role.name == 'admin' %}
         <div style="margin-left: auto;">
             <a href="{% url 'product_create' %}" class="btn">Добавить товар</a>
         </div>
         {% endif %}
     </form>
+            
 </div>
 {% endif %}
 <div>

@@ -19,18 +19,14 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from core.views import ProductListView, UserLoginView
+from core.views import ProductListView, UserLoginView, ProductCreateView, ProductUpdateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", UserLoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
     path("products/", ProductListView.as_view(), name="product_list"),
+    path('products/add/', ProductCreateView.as_view(), name='product_create'),
+    path('products/<int:pk>/edit/', ProductUpdateView.as_view(), name='product_edit'),
+    
 ]
-
-
-brackets = {
-    "(": ")",
-    "{": "}",
-    "[": "]",
-}
